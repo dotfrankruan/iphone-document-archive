@@ -1,33 +1,106 @@
 # Receipt Archive
 
-A small native macOS utility that uses Apple's built-in Continuity Camera. Your iPhone handles edge detection, perspective correction, and multi-page scanning; the utility names and files the result on your Mac.
+Receipt Archive is a small native macOS application for filing invoices, receipts, bank slips, and other paper documents with an iPhone.
 
-Current version: **0.2.0**
+It uses Apple's built-in Continuity Camera rather than implementing its own scanner. The iPhone performs edge detection, perspective correction, and multi-page capture; the Mac application names and stores the returned PDF or photo.
+
+## Features
+
+- Native **Scan Documents** and **Take Photo** actions from a nearby iPhone or iPad
+- Multi-page document scans saved as a single PDF
+- Photos saved as JPEG
+- Filing by document date and category
+- Collision-safe filenames
+- JSON sidecars containing capture metadata
+- Configurable archive location
+- No cloud service, network upload, analytics, or third-party dependency
+
+## Requirements
+
+- macOS 14 or later
+- Xcode Command Line Tools
+- An iPhone or iPad that supports Continuity Camera
+- The Mac and mobile device signed in to the same Apple Account
+- Wi-Fi and Bluetooth enabled on both devices
+
+The devices should be nearby. VPN, internet sharing, or network filtering can interfere with Continuity Camera discovery.
+
+## Build and run
+
+The repository contains source code, not a prebuilt application. Build it locally before opening it:
+
+```sh
+git clone git@github.com:dotfrankruan/iphone-document-archive.git
+cd iphone-document-archive
+make run
+```
+
+`make run` builds an ad-hoc-signed application at:
+
+```text
+dist/Receipt Archive.app
+```
+
+The build is intended for local use and is not notarized for redistribution through Apple.
 
 ## Use
 
-1. Open `dist/Receipt Archive.app`.
-2. Enter the category, title, and document date.
+1. Choose a category, enter a title, and set the document date.
+2. Optionally use **Change…** to select a different archive location.
 3. Select **Scan or Take Photo with iPhone**.
-4. In the system menu, choose **Scan Documents** or **Take Photo** under your iPhone.
-5. Complete the capture on your iPhone and select **Save**.
+4. Under the detected device, choose **Scan Documents** or **Take Photo**.
+5. Complete the capture on the iPhone and select **Save**.
+6. Use **Show in Finder** to reveal the archived file.
 
-The default destination is `~/Documents/Receipt Archive/<year>/<date>/<category>/`. A document scan is stored as PDF and a photo as JPEG. A matching JSON sidecar records the capture time, category, and source.
+The default archive location is:
 
-## Continuity Camera requirements
-
-- Your Mac and iPhone use the same Apple Account with two-factor authentication.
-- Wi-Fi and Bluetooth are enabled on both devices, and the devices are nearby.
-- Your iPhone is not sharing its cellular connection, and your Mac is not sharing its internet connection.
-- If you use a VPN, it must allow local networking and Apple Continuity features.
-
-## Build from source
-
-Xcode Command Line Tools are required:
-
-```sh
-swift test --disable-sandbox
-./scripts/build-app.sh
+```text
+~/Documents/Receipt Archive/
 ```
 
-The app does not upload documents, use the network, or include third-party dependencies.
+Files are organized as follows:
+
+```text
+Receipt Archive/
+└── 2026/
+    └── 2026-08-27/
+        └── Invoice/
+            ├── 2026-08-27-Invoice-Office-supplies.pdf
+            └── 2026-08-27-Invoice-Office-supplies.json
+```
+
+If a filename already exists, the application appends `-2`, `-3`, and so on instead of overwriting it.
+
+## Development commands
+
+```sh
+make help       # List available commands
+make test       # Run all tests
+make build      # Build and ad-hoc sign the application
+make run        # Build and open the application
+make check      # Test, build, and validate the app bundle
+make package    # Create dist/Receipt-Archive-macOS.zip
+make clean      # Remove generated files
+```
+
+Generated `.build/`, `work/`, and `dist/` content is intentionally excluded from Git.
+
+## Privacy
+
+Captured files are written directly to the selected local folder. Receipt Archive does not upload documents, contact a server, or store a copy on the iPhone. Documents and their JSON sidecars should never be committed to this repository.
+
+## Troubleshooting
+
+If the iPhone does not appear:
+
+1. Confirm that both devices use the same Apple Account.
+2. Enable Wi-Fi and Bluetooth on both devices.
+3. Move the devices closer together.
+4. Disable Personal Hotspot or Internet Sharing.
+5. Check whether a VPN or firewall blocks local networking or Apple Continuity features.
+
+If a scan completes but no file appears, confirm that the selected archive folder is writable and check the status message at the bottom of the application window.
+
+## Version
+
+Current application version: **0.2.0**
