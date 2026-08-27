@@ -104,3 +104,9 @@ If a scan completes but no file appears, confirm that the selected archive folde
 ## Version
 
 Current application version: **0.2.0**
+
+## License
+
+Copyright 2026 Frank Ruan.
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
